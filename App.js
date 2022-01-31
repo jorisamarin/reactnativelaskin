@@ -1,22 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, View, Button, Alert, TextInput, Text } from 'react-native';
+import { StyleSheet, View, Button, Alert, TextInput, Text, FlatList } from 'react-native';
+import { color } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export default function App() {
   const [number1, onChangeNumber1] = React.useState(null);
   const [number2, onChangeNumber2] = React.useState(null);
-  const [result, setResult] = React.useState('Result: ');
+  const [result, setResult] = React.useState('');
+  const [data, setData] = useState([]);
 
   const addition = () => { 
-    setResult('Result: ' + (parseInt(number1) + parseInt(number2)))
+    setResult((parseInt(number1) + parseInt(number2)));
+    setData([...data, { key: number1 + "+" + number2 + "=" + result}]);
   };
   const subtraction = () => { 
-    setResult('Result: ' + (parseInt(number1) - parseInt(number2)))
+    setResult((parseInt(number1) - parseInt(number2)));
+    setData([...data, { key: number1 + "-" + number2  + "=" + result}]);
   };
 
   return (
     <View style={styles.container}>
-      <Text>{result}</Text>
+      <Text>{"Result: "}{result}</Text>
       <TextInput
         style={styles.input}
         onChangeText={onChangeNumber1}
@@ -31,10 +35,18 @@ export default function App() {
         keyboardType="numeric"
         clearButtonMode="always"
       />
-      
       <View style={styles.button}>
       <Button onPress={addition} title="+" />
       <Button onPress={subtraction} title="-" />
+      </View>
+      <View style={styles.flatlist}>
+      <Text>{"History:"}</Text>
+      <FlatList style={styles.list}
+      data={data}
+      renderItem={({ item }) =>
+        <Text>{item.key}</Text>
+      }
+    />
       </View>
       <StatusBar style="auto" />
     </View>
@@ -47,6 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 50,
   },
   input : {
     width:200  , 
@@ -56,6 +69,12 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: 50,
+  },
+  flatlist : {
+    flex: 2,
+   flexDirection: 'column',
+   color: 'black',
   }
 });
+
